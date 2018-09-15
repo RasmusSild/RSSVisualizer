@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { parseString } from 'xml2js';
 import FeedItem from "./FeedItem";
-import {Card, Dimmer, Loader} from 'semantic-ui-react'
+import {Card, Dimmer, Loader, Header, Grid} from 'semantic-ui-react'
 
 class Feed extends Component {
 
@@ -14,7 +14,9 @@ class Feed extends Component {
 
         this.state = {
             items: null,
-            mercuryLoading: false
+            mercuryLoading: false,
+            title: null,
+            copyright: null
         }
     }
 
@@ -24,8 +26,11 @@ class Feed extends Component {
         axios.get(CORS_PROXY + this.feedUrl)
             .then(response => {
                 parseString(response.data, (err, res2) =>{
+                    console.log(res2);
                     this.setState({
-                        items: res2.rss.channel[0].item
+                        items: res2.rss.channel[0].item,
+                        title: res2.rss.channel[0].title[0],
+                        copyright: res2.rss.channel[0].copyright[0]
                     })
                 });
             })
@@ -40,7 +45,7 @@ class Feed extends Component {
 
     render() {
 
-        const {items, mercuryLoading} = this.state;
+        const {items, mercuryLoading, title, copyright} = this.state;
 
         let output = null;
 
@@ -57,7 +62,15 @@ class Feed extends Component {
             <Dimmer active={mercuryLoading === true}>
                 <Loader />
             </Dimmer>
+            {title && <Header as='h1' className={'page_header'}>{title}</Header>}
             {output}
+            {copyright && <Grid textAlign='right' columns={1}>
+                <Grid.Row>
+                    <Grid.Column className={'copyright'}>
+                        {copyright}
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>}
         </div>;
     }
 }

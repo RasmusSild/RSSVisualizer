@@ -16,6 +16,14 @@ body {
   cursor: pointer !important;
 }
 
+.page_header {
+  margin-left: 10px !important;
+}
+
+.copyright {
+  margin: 10px !important;
+}
+
 img {
   width: 100%;
 }
